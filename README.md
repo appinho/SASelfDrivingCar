@@ -1,6 +1,34 @@
 # SASelfDrivingCar
 
-# Hardware Setup
+<p align="center">
+	<img src="./documentation/robot_car.jpg">
+</p>
+
+# Key software components
+
+## Localization
+
+## Perception
+
+## Navigation
+
+# Setup
+
+## Software
+
+```
+sudo apt-get install python-tk
+pip install opencv-python
+pip install picamera
+```
+
+## Hardware
+
+### Raspberry Pi
+
+<p align="center">
+	<img src="./documentation/raspberrypi_gpio.jpg">
+</p>
 
 Follow https://www.hackster.io/bestd25/pi-car-016e66
 
@@ -13,7 +41,7 @@ BLUE 15
 
 Use `keyboard_control.py` to drive around the car with the keyboard.
 
-## Camera setup
+### Camera
 
 Follow https://www.pyimagesearch.com/2015/03/30/accessing-the-raspberry-pi-camera-with-opencv-and-python/  
 
@@ -22,8 +50,8 @@ Followed https://raspberrypi.stackexchange.com/questions/23182/how-to-stream-vid
 Run `./remote_livestream.py` 
 On your other device run VLC and connect to `rtsp:://IP.OF.RAS.PI::8554`
 
-## Run first computer vision program
+### Ultrasonics
 
-## Helpful links
+# Helpful links
 * https://www.hackster.io/bestd25/pi-car-016e66  
 * https://www.pyimagesearch.com/2015/03/30/accessing-the-raspberry-pi-camera-with-opencv-and-python/  
