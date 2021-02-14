@@ -26,7 +26,7 @@ class UltrasonicDriver():
         return image
 
     def measure_distance(self, measure='cm'):
-        #self.init()
+        self.init()
         time.sleep(0.005)
         gpio.output(self.pin_trigger, True)
         time.sleep(0.00001)

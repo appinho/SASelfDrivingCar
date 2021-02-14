@@ -1,31 +1,37 @@
-from steering import *
+from . import steering
 import keyboard
 
-while True:
-    sleep_time = 0.060
-    init()
-    try:
+sleep_time = 0.060 #s
+
+class KeyboardController():
+    def __init__(self):
+        steering.init()
+        # Assuming the bot is paused in the beginning
+        self.last_input = "P"
+
+    def keyboard_event(self):
         if keyboard.is_pressed("w"):
             print("W")
-            forward(sleep_time)
+            steering.forward(sleep_time)
+            self.last_input = "W"
         elif keyboard.is_pressed("a"):
             print("A")
-            turn_left(sleep_time)
+            steering.turn_left(sleep_time)
+            self.last_input = "A"
         elif keyboard.is_pressed("s"):
             print("S")
-            reverse(sleep_time)
+            steering.reverse(sleep_time)
+            self.last_input = "S"
         elif keyboard.is_pressed("d"):
             print("D")
-            turn_right(sleep_time)
+            steering.turn_right(sleep_time)
+            self.last_input = "D"
         elif keyboard.is_pressed("p"):
             print("P")
-            stop(sleep_time)
+            steering.stop(sleep_time)
+            self.last_input = "P"
         elif keyboard.is_pressed("q"):
-            stop(sleep_time)
+            steering.stop(sleep_time)
             print("Quit")
-            break
-        else:
-            pass
-    except:
-        print("Done")
-        break
+            self.last_input = "Q"
+        return self.last_input

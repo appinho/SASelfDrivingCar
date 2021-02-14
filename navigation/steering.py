@@ -47,4 +47,4 @@ def stop(tf):
     gpio.output(PIN_MOTOR_REAR_LEFT, False)
     gpio.output(PIN_MOTOR_REAR_RIGHT, False)
     time.sleep(tf)
-    gpio.cleanup()
+    #gpio.cleanup()

@@ -1,20 +1,8 @@
 from sensors import camera
 from sensors import ultrasonic
-import os
 import time
 
 DELAY = 95
-
-class SensorData():
-    def __init__(self, timestamp):
-        self.filename = os.path.join("/home/pi/SASelfDrivingCar/data", "%d" % timestamp + ".txt")
-
-    def write(self, timestamp, distances):
-        with open(self.filename, 'a+') as f:
-            f.write("%d " % timestamp)
-            for distance in distances:
-                f.write("%f " % distance)
-            f.write("\n")
 
 class SensorSetup():
     def __init__(self):
@@ -26,14 +14,16 @@ class SensorSetup():
             ultrasonic.UltrasonicDriver(5, 7)    # RIGHT 4
         ]
         self.before = round(time.time() * 1000)
-        self.sensor_data = SensorData(self.before)
+        #self.sensor_data = SensorData(self.before)
         print("Sensor Setup Init done")
 
     def run(self, now):
         duration = now - self.before
         if duration > DELAY:
-            self.capture_data(now)
+            data = self.capture_data(now)
             self.before = round(time.time() * 1000)
+            return data
+        return []
 
     def capture_data(self, timestamp):
         #print(timestamp)
@@ -48,7 +38,8 @@ class SensorSetup():
             #print("Measure US Driver" , i, distance)
             #image = ultrasonic_driver.show_distance(image, distance, i)
         #cv2.imshow("Image", image)
-        self.sensor_data.write(timestamp, distances)
-        now = time.time()
+        return timestamp, distances
+        #self.sensor_data.write(timestamp, distances)
+        #now = time.time()
         print("Data capture took %f ms" % (round(now * 1000) - timestamp))
         print(distances)
