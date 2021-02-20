@@ -1,9 +1,10 @@
 from . import steering
 import keyboard
 
-sleep_time = 0.060 #s
+sleep_time = 0.060  # s
 
-class KeyboardController():
+
+class KeyboardController:
     def __init__(self):
         steering.init()
         # Assuming the bot is paused in the beginning

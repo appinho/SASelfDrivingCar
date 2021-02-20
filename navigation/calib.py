@@ -7,7 +7,7 @@ WAIT = 3
 print("START")
 steering.init()
 
-#steering.stop(1)
+# steering.stop(1)
 steering.forward(WAIT)
 steering.reverse(WAIT)
 steering.turn_right(WAIT)
