@@ -44,13 +44,14 @@ class ParticleFilter:
         self.best_index = -1
         self.t = 0
 
-    def run(self, key, sensor_data, VELOCITY, TURN_RATE):
+    def run(self, key, sensor_data, sensor_poses, VELOCITY, TURN_RATE):
         if len(sensor_data):
             timestamp = sensor_data[0]
             if self.t == 0:
-                t = timestamp
+                self.t = timestamp
                 return
-            measurement = sensor_data[1:5] / 100
+	    print(sensor_data, len(sensor_data))
+            measurement = [x / 100 for x in sensor_data[1]]
             dt = (timestamp - self.t) / 1000
             if key == 0:
                 vel = VELOCITY
@@ -67,23 +68,28 @@ class ParticleFilter:
             else:
                 vel = 0
                 yaw_rate = 0
-            self.predict(dt, vel, yaw_rate, [std_v, std_y])
-            best_index = self.update(measurement, sensor_poses, STD_M)
+	    print(dt, vel, yaw_rate)
+            self.predict(dt, vel, yaw_rate)
+            best_index = self.update(measurement, sensor_poses)
             self.resample()
-            # print("Best particle", best_index)
+            print("Best particle", best_index)
             self.show(best_index)
             self.t = timestamp
+
+    def get_standard_deviation(self, vel, yaw_rate):
+	std_v = self.std_v * abs(vel) + 0.1
+	std_y = self.std_y * abs(yaw_rate) + 0.1
+	return [std_v, std_y]
 
     def show(self, index):
         self.particles[index].show()
 
-    def init(self, index):
-        self.particles.append(Particle(index))
+    def init(self, index, x, y, o):
+        self.particles.append(Particle(index, x, y, o))
 
     def predict(self, dt, vel, yaw_rate):
         self.landmarks = []
-        std_v = self.std_v * abs(vel) + 0.1
-        std_y = self.std_y * abs(yaw_rate) + 0.1
+        [std_v, std_y] = self.get_standard_deviation(vel, yaw_rate)
         for particle in self.particles:
             n_vel = np.random.normal(vel, std_v)
             n_yaw_rate = np.random.normal(yaw_rate, std_y)
@@ -138,7 +144,7 @@ class ParticleFilter:
                 w *= (
                     1
                     / np.sqrt(2 * np.pi * self.std_m * self.std_m)
-                    * np.exp(-1 / 2 * (min_distance / self.td_m) ** 2)
+                    * np.exp(-1 / 2 * (min_distance / self.std_m) ** 2)
                 )
                 # print(min_distance, w)
                 # print(w)
@@ -154,7 +160,7 @@ class ParticleFilter:
         for p in self.particles:
             p.w /= self.sum_w
             self.cumulated_weights.append(self.cumulated_weights[-1] + p.w)
-        self.draw("Update", best_index, True)
+        # self.draw("Update", best_index, True)
         # print(self.cumulated_weights)
         self.best_index = best_index
         return best_index
@@ -179,5 +185,5 @@ class ParticleFilter:
         self.particles = new_particles
         for i in range(num_resamples, self.num_particles):
             self.init(i)
-        self.draw("Resample")
+        # self.draw("Resample")
         self.i += 1
