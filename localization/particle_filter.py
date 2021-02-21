@@ -50,7 +50,7 @@ class ParticleFilter:
             if self.t == 0:
                 self.t = timestamp
                 return
-	    print(sensor_data, len(sensor_data))
+	    
             measurement = [x / 100 for x in sensor_data[1]]
             dt = (timestamp - self.t) / 1000
             if key == 0:
@@ -68,11 +68,10 @@ class ParticleFilter:
             else:
                 vel = 0
                 yaw_rate = 0
-	    print(dt, vel, yaw_rate)
+
             self.predict(dt, vel, yaw_rate)
             best_index = self.update(measurement, sensor_poses)
             self.resample()
-            print("Best particle", best_index)
             self.show(best_index)
             self.t = timestamp
 
