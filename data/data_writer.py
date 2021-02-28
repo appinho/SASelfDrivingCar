@@ -12,5 +12,14 @@ class DataWriter:
             f.write("%d " % timestamp)
             for distance in distances:
                 f.write("%f " % distance)
-            f.write("%s " % steering)
+            if steering == "W":
+                f.write("0")
+            elif steering == "A":
+                f.write("1")
+            elif steering == "S":
+                f.write("2")
+            elif steering == "D":
+                f.write("3")
+            else:
+                f.write("-1")
             f.write("\n")

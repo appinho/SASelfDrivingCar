@@ -7,16 +7,6 @@ from landmark import Landmark
 from maps import *
 
 RESAMPLING_RATE = 1.0
-EDGE = 50
-RES = 200
-ARROW = 30
-COLORS = ["g", "r", "c", "m", "y"]
-
-
-def GET_COLOR(i):
-    j = i % len(COLORS)
-    return COLORS[j]
-
 
 class ParticleFilter:
     def __init__(
@@ -38,7 +28,6 @@ class ParticleFilter:
         self.std_y = std_y
         self.std_m = std_m
         self.cumulated_weights = []
-        self.landmarks = []
         self.i = 0
         self.save = save
         self.best_index = -1
@@ -76,9 +65,10 @@ class ParticleFilter:
             self.t = timestamp
 
     def get_standard_deviation(self, vel, yaw_rate):
-	std_v = self.std_v * abs(vel) + 0.1
-	std_y = self.std_y * abs(yaw_rate) + 0.1
-	return [std_v, std_y]
+	std_v = self.std_v * abs(vel) + 0.02
+	std_y = self.std_y * abs(yaw_rate) + 0.02
+	std_p = 0.02
+	return [std_v, std_y, std_p]
 
     def show(self, index):
         self.particles[index].show()
@@ -87,8 +77,7 @@ class ParticleFilter:
         self.particles.append(Particle(index, x, y, o))
 
     def predict(self, dt, vel, yaw_rate):
-        self.landmarks = []
-        [std_v, std_y] = self.get_standard_deviation(vel, yaw_rate)
+        [std_v, std_y, std_p] = self.get_standard_deviation(vel, yaw_rate)
         for particle in self.particles:
             n_vel = np.random.normal(vel, std_v)
             n_yaw_rate = np.random.normal(yaw_rate, std_y)
@@ -114,9 +103,10 @@ class ParticleFilter:
             else:
                 dx = n_vel * dt * np.cos(particle.o)
                 dy = n_vel * dt * np.sin(particle.o)
-            # print(dx, dy)
-            particle.x += dx
-            particle.y += dy
+            n_x = np.random.normal(0, std_p)
+            n_y = np.random.normal(0, std_p)
+            particle.x += dx + n_x
+            particle.y += dy + n_y
         # self.draw("Predict")
 
     def update(self, measurement, sensor_poses):
@@ -126,17 +116,22 @@ class ParticleFilter:
         for i, p in enumerate(self.particles):
             # print("i", i)
             w = 1.0
+            p.landmarks = []
+            # print("P", p.x, p.y, p.o)
             for j, m in enumerate(measurement):
+            	if m > 5.0:
+            		print("Skip", m)
+            		continue
                 x = p.x + sensor_poses[j][0]
                 y = p.y + sensor_poses[j][1]
-                o = p.o + sensor_poses[j][2]
-                # print("L", x,y,o)
-                x_new = x + np.cos(o) * m
-                y_new = y + np.sin(o) * m
-                # print("NEW", x,y, o, m, x_new, y_new)
-                l = Landmark(p.i, x_new, y_new, o)
+                o_new = p.o + sensor_poses[j][2]
+                # print("L", x, y, o_new)
+                x_new = x + np.cos(o_new) * m
+                y_new = y + np.sin(o_new) * m
+                # print("NEW", m, x_new, y_new)
+                l = Landmark(p.i, x_new, y_new, o_new)
                 # l.show()
-                self.landmarks.append(l)
+                p.landmarks.append(l)
                 min_distance = l.get_min_distance2()
                 # result = l.line_x_rectangle()
                 # print('D', min_distance)

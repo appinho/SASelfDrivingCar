@@ -1,15 +1,15 @@
 import numpy as np
 from localization import particle_filter
+from localization import viz
 from navigation.parameters import *
 from sensors.parameters import *
 
-NUM_PARTICLES = 40
-STD_V = 1.6
-STD_Y = 0.3
-STD_M = 0.2
+# log_file = "1613307394.txt"
+log_file = "1613900096.txt"
 
-# measurements = [(5.4, 0.4, 0.5, 0.6), (5.3, 0.5, 0.5, 0.6), (5.2, 0.6, 0.5, 0.6), (5.1, 0.7, 0.5, 0.6)]
-# steerings = [(0.1, 0.0, 0.0), (0.1, 1.0, 0.0), (0.1, 1.0, 0.0), (0.1, 1.0, 0.0)]
+DRAW = True
+SAVE = False
+START = 110
 
 
 def read_data(filename):
@@ -19,12 +19,16 @@ def read_data(filename):
 
 
 def main():
-    pf = particle_filter.ParticleFilter(NUM_PARTICLES, True)
-    pf.draw("Start")
-    data = read_data("./data/logs/1613307394.txt")
-    start_time = 1613307395027
+    log_filename = "./data/logs/" + log_file
+    data = read_data(log_filename)
+    start_time = int(data[START][0])
+    start_x = data[START][3] / 100 + 0.1425
+    start_y = data[START][4] / 100 + 0.09
+    start_o = 0.0
+    pf = particle_filter.ParticleFilter(x=start_x, y=start_y, o=start_o)
+    # viz.draw("Start", pf.particles, pf.i, save=SAVE, draw=DRAW)
     # for steering, measurement in zip(steerings, measurements):
-    for line in data:
+    for i, line in enumerate(data[START:]):
         timestamp = line[0]
         measurement = line[1:5] / 100
         dt = (timestamp - start_time) / 1000
@@ -46,13 +50,20 @@ def main():
             vel = 0
             yaw_rate = 0
 
-        std_v = STD_V * abs(vel) + 0.1
-        std_y = STD_Y * abs(yaw_rate) + 0.1
-        print(timestamp, measurement, dt, vel, yaw_rate, std_v, std_y)
-        pf.predict(dt, vel, yaw_rate, [std_v, std_y])
-        best_index = pf.update(measurement, sensor_poses, STD_M)
+        pf.predict(dt, vel, yaw_rate)
+        best_index = pf.update(measurement, sensor_poses)
+        bp = pf.particles[best_index]
+        title = "t=%d x=%.2f y=%.2f o=%.2f" % (i, bp.x, bp.y, bp.o)
+        print(title)
+        viz.draw(
+            title,
+            pf.particles,
+            i,
+            best_index=best_index,
+            save=SAVE,
+            draw=DRAW,
+        )
         pf.resample()
-        print("Best particle", best_index)
         pf.show(best_index)
         # pf.particles[best_index].print()
 

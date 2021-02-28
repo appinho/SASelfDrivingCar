@@ -13,6 +13,7 @@ X = 0.6827 + 0.1425
 Y = 1.2269 + 0.09
 O = 0.0
 
+
 def test_data_capture():
     sensor_setup = setup.SensorSetup()
     keyboard_controller = keyboard_control.KeyboardController()
@@ -23,8 +24,10 @@ def test_data_capture():
             # Apply steering
             key = keyboard_controller.keyboard_event()
             # Get sensor data
-            sensor_data = sensor_setup.run(now) 
-            pf.run(key, sensor_data, sensor_poses, nav_p.VELOCITY, nav_p.TURN_RATE)
+            sensor_data = sensor_setup.run(now)
+            pf.run(
+                key, sensor_data, sensor_poses, nav_p.VELOCITY, nav_p.TURN_RATE
+            )
 
     except KeyboardInterrupt:
         steering.stop(1)

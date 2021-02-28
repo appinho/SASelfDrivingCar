@@ -1,7 +1,33 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+from maps import MAP_X, MAP_Y
+import numpy as np
 
-def draw(self, title, best_index=-1, save=False, draw=False):
+EDGE = 50
+RES = 200
+ARROW = 30
+COLORS = ["g", "r", "c", "m", "y"]
+
+def get_color(i):
+    j = i % len(COLORS)
+    return COLORS[j]
+
+def draw_particle(ax, p, c):
+	#x_2 = np.cos(p.o) * ARROW
+    #y_2 = np.sin(p.o) * ARROW
+    #
+    #x_e = x_2
+    #y_e = y_2
+    x_s = p.x * RES
+    y_s = p.y * RES
+    ax.plot(x_s, y_s, c)
+
+def draw_landmark(ax, l, c):
+    x_s = l.x * RES
+    y_s = l.y * RES
+    ax.plot(x_s, y_s, c)
+
+def draw(title, particles, i, best_index=-1, save=False, draw=False):
 
         fig, ax = plt.subplots(1)
         ax.set_xlim([-EDGE * MAP_X, EDGE * MAP_X + RES * MAP_X])
@@ -16,29 +42,32 @@ def draw(self, title, best_index=-1, save=False, draw=False):
         )
         ax.add_patch(rect)
 
-        for p in self.particles:
-            if best_index != -1 and p.i != best_index:
-                continue
-            # p.print()
-            x_2 = np.cos(p.o) * ARROW
-            y_2 = np.sin(p.o) * ARROW
-            x_s = p.x * RES
-            y_s = p.y * RES
-            x_e = x_2
-            y_e = y_2
-            c = GET_COLOR(p.i)
-            # c = 'k'
-            ax.arrow(
-                x_s, y_s, x_e, y_e, head_width=10, head_length=10, fc=c, ec=c
-            )
-        for l in self.landmarks:
-            if best_index != -1 and l.i != best_index:
-                continue
-            c = GET_COLOR(l.i)
-            # c = 'k'
-            ax.plot(l.x * RES, l.y * RES, c + "o")
+        for p in particles:
+            if p.i == best_index:
+                continue	
+            draw_particle(ax, p, 'c.')
+            for l in p.landmarks:
+            	draw_landmark(ax, l, 'c.')
+
+        if best_index >= 0:
+            p = particles[best_index]
+            draw_particle(ax, p, 'gs')
+            p.show()
+            # x_off = np.cos(p.o) * 5
+            # x2 = [p.x * RES, x_off * RES]
+            # y2 = [0, MAP_Y * RES]
+            for l in p.landmarks:
+                x1 = p.x * RES
+                x2 = (p.x + np.cos(l.o) * 5) * RES
+                y1 = p.y * RES
+                y2 = (p.y + np.sin(l.o) * 5) * RES
+            	plt.plot([x1, x2], [y1, y2], color='r', marker = 'o')
+                draw_landmark(ax, l, 'gs')
+                l.show()
+            
         plt.title(title)
         if save:
-            plt.savefig("./data/loc/" + "{0:0=3d}".format(self.i))
+            plt.savefig("./data/loc/" + "{0:0=3d}".format(i))
         elif draw:
             plt.show()
+        plt.close('all')

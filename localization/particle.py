@@ -2,6 +2,8 @@ from maps import *
 import random
 import numpy as np
 
+from landmark import Landmark
+
 
 class Particle:
     def __init__(self, i, x, y, o):
@@ -10,7 +12,7 @@ class Particle:
         self.y = y  # MAP_Y * random.uniform(0,1)
         self.o = o  # 0.0 * np.pi * random.uniform(0,1)
         self.w = random.uniform(0, 1)
-        # self.show()
+        self.landmarks = []
 
     def show(self):
         print(
