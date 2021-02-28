@@ -106,7 +106,7 @@ def draw2(fig, ax, title, best_particle):
     )
     ax.add_patch(rect)
 
-    draw_particle(ax, best_particle, 'c.')
+    draw_particle(ax, best_particle, 'gs')
     for l in best_particle.landmarks:
         draw_landmark(ax, l, 'c.')
 
@@ -114,5 +114,3 @@ def draw2(fig, ax, title, best_particle):
     move_figure(fig, 0, 0)
     plt.pause(0.1)
     plt.draw()
-
-    # plt.close('all')

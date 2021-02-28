@@ -4,6 +4,7 @@ import struct
 import time
 import pickle
 
+from data.data_writer import DataWriter
 from navigation import keyboard_control
 from navigation.parameters import VELOCITY, TURN_RATE
 from network.parameters import ip_address, port
@@ -19,6 +20,10 @@ def live_demo_localization():
     keyboard_controller = keyboard_control.KeyboardController()
     sensor_setup = SensorSetup()
 
+    now = time.time()
+    data_write = DataWriter(now)
+    print("Write log to %f.txt" % now)
+
     start_x = 0.5
     start_y = 1.3
     start_o = 0.0
@@ -28,15 +33,14 @@ def live_demo_localization():
             now = round(time.time() * 1000)
             steering = keyboard_controller.keyboard_event()
             sensor_data = sensor_setup.run(now)
+            if sensor_data:
+                data_write.write(sensor_data[0], sensor_data[1], steering)
             best_index = pf.run(steering, sensor_data,
                                 sensor_poses, VELOCITY, TURN_RATE)
             if not best_index:
                 continue
             best_particle = pf.particles[best_index]
-            best_pose = [best_particle.x, best_particle.y, best_particle.o]
             data_string = pickle.dumps(best_particle)
-            #data = struct.pack('<3f', *best_particle)
-            # client_socket.sendall(data)
             client_socket.send(data_string)
             data = client_socket.recv(1024)
             if steering == "Q":
