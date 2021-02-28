@@ -8,13 +8,14 @@ from parameters import *
 server_socket = socket.socket()
 server_socket.bind((ip_address, port))
 server_socket.listen(0)
-
+print("1")
 # Read bytes
 connection = server_socket.accept()[0].makefile('rb')
-
+print("2")
 try:
 	img = None
 	while True:
+		print("Read")
 		image_length = struct.unpack('<L', connection.read(struct.calcsize('<L')))[0]
 		if not image_length:
 			break
