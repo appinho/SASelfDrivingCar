@@ -35,7 +35,6 @@ class ParticleFilter:
 
     def run(self, key, sensor_data, sensor_poses, VELOCITY, TURN_RATE):
         if len(sensor_data):
-            print(sensor_data)
             timestamp = sensor_data[0]
             if self.t == 0:
                 self.t = timestamp
@@ -62,7 +61,6 @@ class ParticleFilter:
             self.predict(dt, vel, yaw_rate)
             best_index = self.update(measurement, sensor_poses)
             self.resample()
-            self.show(best_index)
             self.t = timestamp
             return best_index
         return None
