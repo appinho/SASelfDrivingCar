@@ -1,9 +1,10 @@
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-from maps import MAP_X, MAP_Y
+from localization.maps import MAP_X, MAP_Y
 import numpy as np
 
-EDGE = 50
+EDGE = 10
 RES = 200
 ARROW = 30
 COLORS = ["g", "r", "c", "m", "y"]
@@ -11,6 +12,18 @@ COLORS = ["g", "r", "c", "m", "y"]
 def get_color(i):
     j = i % len(COLORS)
     return COLORS[j]
+
+def move_figure(f, x, y):
+    """Move figure's upper left corner to pixel (x, y)"""
+    backend = matplotlib.get_backend()
+    if backend == 'TkAgg':
+        f.canvas.manager.window.wm_geometry("+%d+%d" % (x, y))
+    elif backend == 'WXAgg':
+        f.canvas.manager.window.SetPosition((x, y))
+    else:
+        # This works for QT and GTK
+        # You can also use window.setGeometry
+        f.canvas.manager.window.move(x, y)
 
 def draw_particle(ax, p, c):
 	#x_2 = np.cos(p.o) * ARROW
@@ -61,11 +74,12 @@ def draw(title, particles, i, best_index=-1, save=False, draw=False):
                 x2 = (p.x + np.cos(l.o) * 5) * RES
                 y1 = p.y * RES
                 y2 = (p.y + np.sin(l.o) * 5) * RES
-            	plt.plot([x1, x2], [y1, y2], color='r', marker = 'o')
+                plt.plot([x1, x2], [y1, y2], color='r', marker = 'o')
                 draw_landmark(ax, l, 'gs')
                 l.show()
             
         plt.title(title)
+        move_figure(fig, 0,0)
         if save:
             plt.savefig("./data/loc/" + "{0:0=3d}".format(i))
         elif draw:

@@ -1,6 +1,5 @@
-from maps import *
 import numpy as np
-
+from localization.maps import MAP_X, MAP_Y
 
 class Landmark:
     def __init__(self, i, x, y, o):

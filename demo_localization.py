@@ -9,7 +9,7 @@ log_file = "1613900096.txt"
 
 DRAW = True
 SAVE = False
-START = 110
+START = 0
 
 
 def read_data(filename):
@@ -29,30 +29,14 @@ def main():
     # viz.draw("Start", pf.particles, pf.i, save=SAVE, draw=DRAW)
     # for steering, measurement in zip(steerings, measurements):
     for i, line in enumerate(data[START:]):
-        timestamp = line[0]
-        measurement = line[1:5] / 100
-        dt = (timestamp - start_time) / 1000
-        start_time = timestamp
         steering = line[5]
-        if steering == 0:
-            vel = VELOCITY
-            yaw_rate = 0
-        elif steering == 1:
-            vel = 0
-            yaw_rate = TURN_RATE
-        elif steering == 2:
-            vel = -VELOCITY
-            yaw_rate = 0
-        elif steering == 3:
-            vel = 0
-            yaw_rate = -TURN_RATE
-        else:
-            vel = 0
-            yaw_rate = 0
-
-        pf.predict(dt, vel, yaw_rate)
-        best_index = pf.update(measurement, sensor_poses)
+        sensor_data = [line[0], line[1:5]]
+        best_index = pf.run(steering, sensor_data, sensor_poses, VELOCITY, TURN_RATE)
+        if not best_index:
+            continue
         bp = pf.particles[best_index]
+        if not bp:
+            continue
         title = "t=%d x=%.2f y=%.2f o=%.2f" % (i, bp.x, bp.y, bp.o)
         print(title)
         viz.draw(

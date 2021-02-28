@@ -2,16 +2,15 @@ import copy
 import numpy as np
 import random
 
-from particle import Particle
-from landmark import Landmark
-from maps import *
-
-RESAMPLING_RATE = 1.0
+from localization.particle import Particle
+from localization.landmark import Landmark
+from localization.maps import MAP_X, MAP_Y
 
 class ParticleFilter:
     def __init__(
         self,
         num_particles=40,
+        resampling_rate=1.0,
         x=0.4,
         y=1.35,
         o=0,
@@ -21,6 +20,7 @@ class ParticleFilter:
         save=False,
     ):
         self.num_particles = num_particles
+        self.resampling_rate = resampling_rate
         self.particles = []
         for i in range(self.num_particles):
             self.init(i, x, y, o)
@@ -35,11 +35,12 @@ class ParticleFilter:
 
     def run(self, key, sensor_data, sensor_poses, VELOCITY, TURN_RATE):
         if len(sensor_data):
+            print(sensor_data)
             timestamp = sensor_data[0]
             if self.t == 0:
                 self.t = timestamp
                 return
-	    
+    
             measurement = [x / 100 for x in sensor_data[1]]
             dt = (timestamp - self.t) / 1000
             if key == 0:
@@ -63,12 +64,14 @@ class ParticleFilter:
             self.resample()
             self.show(best_index)
             self.t = timestamp
+            return best_index
+        return None
 
     def get_standard_deviation(self, vel, yaw_rate):
-	std_v = self.std_v * abs(vel) + 0.02
-	std_y = self.std_y * abs(yaw_rate) + 0.02
-	std_p = 0.02
-	return [std_v, std_y, std_p]
+        std_v = self.std_v * abs(vel) + 0.02
+        std_y = self.std_y * abs(yaw_rate) + 0.02
+        std_p = 0.02
+        return [std_v, std_y, std_p]
 
     def show(self, index):
         self.particles[index].show()
@@ -119,9 +122,9 @@ class ParticleFilter:
             p.landmarks = []
             # print("P", p.x, p.y, p.o)
             for j, m in enumerate(measurement):
-            	if m > 5.0:
-            		print("Skip", m)
-            		continue
+                if m > 5.0:
+                    print("Skip", m)
+                    continue
                 x = p.x + sensor_poses[j][0]
                 y = p.y + sensor_poses[j][1]
                 o_new = p.o + sensor_poses[j][2]
@@ -161,7 +164,7 @@ class ParticleFilter:
 
     def resample(self):
         new_particles = []
-        num_resamples = int(RESAMPLING_RATE * self.num_particles)
+        num_resamples = int(self.resampling_rate * self.num_particles)
         for i in range(num_resamples):
             r = random.uniform(0, 1)
             index = self.num_particles
