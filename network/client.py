@@ -7,7 +7,7 @@ from parameters import *
 
 client_socket = socket.socket()
 
-client_socket.connect(ip_address, port)
+client_socket.connect((ip_address, port))
 # Write bytes
 connection = client_socket.makefile('wb')
 try:
