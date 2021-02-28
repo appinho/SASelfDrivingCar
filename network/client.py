@@ -8,12 +8,12 @@ from parameters import *
 client_socket = socket.socket()
 
 client_socket.connect(ip_address, port)
-
+# Write bytes
 connection = client_socket.makefile('wb')
 try:
 	camera = picamera.Picamera()
 	camera.vflip = True
-	camera.resolution = (640, 480)
+	camera.resolution = (320, 240)
 	camera.start_preview()
 	time.sleep(2)
 
@@ -27,7 +27,13 @@ try:
 		stream.seek(0)
 		connection.write(stream.read())
 
+		# Run the stream for 30 seconds
 		if time.time() - start > 30:
 			break
+		stream.seek(0)
+		stream.truncate()
+
+	connection.write(struct.pack('<L', 0))
 finally:
-	break
+	connection.close()
+	client_socket.close()

@@ -9,6 +9,7 @@ server_socket = socket.socket()
 server_socket.bind((ip_address, port))
 server_socket.listen(0)
 
+# Read bytes
 connection = server_socket.accept()[0].makefile('rb')
 
 try:
@@ -37,4 +38,5 @@ try:
 
 
 finally:
-	pass
+	connection.close()
+	server_socket.close()

@@ -52,6 +52,9 @@ On your other device run VLC and connect to `rtsp:://IP.OF.RAS.PI::8554`
 
 ### Ultrasonics
 
+### Network
+https://www.youtube.com/watch?v=bWwZF_zVf00
+
 # Helpful links
 * https://www.hackster.io/bestd25/pi-car-016e66  
 * https://www.pyimagesearch.com/2015/03/30/accessing-the-raspberry-pi-camera-with-opencv-and-python/  
