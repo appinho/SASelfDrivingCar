@@ -6,6 +6,7 @@ from localization.particle import Particle
 from localization.landmark import Landmark
 from localization.maps import MAP_X, MAP_Y
 
+
 class ParticleFilter:
     def __init__(
         self,
@@ -39,7 +40,7 @@ class ParticleFilter:
             if self.t == 0:
                 self.t = timestamp
                 return
-    
+
             measurement = [x / 100 for x in sensor_data[1]]
             dt = (timestamp - self.t) / 1000
             if key == 0:

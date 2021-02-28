@@ -63,7 +63,7 @@ def detect(frame):
             pt1 = (int(x0 + 1000*(-b)), int(y0 + 1000*(a)))
             pt2 = (int(x0 - 1000*(-b)), int(y0 - 1000*(a)))
             cv2.line(lines_image, pt1, pt2, (0,0,255), 3, cv2.LINE_AA)
-        
+
     return lines_image
     """
 

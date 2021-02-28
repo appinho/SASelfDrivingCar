@@ -3,6 +3,8 @@ import cv2
 import numpy as np
 
 # define empty method for trackbar
+
+
 def nothing(x):
     pass
 
@@ -86,7 +88,7 @@ while True:
     # fit bounding box
     try:
         hierarchy = hierarchy[0]
-    except:
+    except BaseException:
         hierarchy = []
 
     height, width = bin_dilate_img.shape

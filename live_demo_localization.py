@@ -4,12 +4,13 @@ import struct
 import time
 from navigation import keyboard_control
 
+
 def live_demo_localization():
 	client_socket = socket.socket()
 	client_socket.connect((ip_address, port))
 
 	keyboard_controller = keyboard_control.KeyboardController()
-	
+
 	start_x = 0.5
 	start_y = 1.3
 	start_o = 0.0

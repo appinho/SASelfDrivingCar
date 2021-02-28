@@ -60,7 +60,8 @@ class LineDetector:
         M = cv2.getPerspectiveTransform(src, dst)
         Minv = cv2.getPerspectiveTransform(dst, src)
         img_size = (image.shape[1], image.shape[0])
-        warped = cv2.warpPerspective(image, M, img_size, flags=cv2.INTER_LINEAR)
+        warped = cv2.warpPerspective(
+            image, M, img_size, flags=cv2.INTER_LINEAR)
         return warped, Minv
 
     def abs_sobel_thresh(
@@ -107,7 +108,8 @@ class LineDetector:
         # 3) Take the absolute value of the x and y gradients
         abs_sobelx = np.absolute(sobelx)
         abs_sobely = np.absolute(sobely)
-        # 4) Use np.arctan2(abs_sobely, abs_sobelx) to calculate the direction of the gradient
+        # 4) Use np.arctan2(abs_sobely, abs_sobelx) to calculate the direction
+        # of the gradient
         direction = np.arctan2(abs_sobely, abs_sobelx)
         # 5) Create a binary mask where direction thresholds are met
         dir_binary = np.zeros_like(direction)
@@ -121,7 +123,7 @@ class LineDetector:
         # Take a histogram of the bottom half of the image
         histogram = np.sum(binary_warped, axis=0)
         left_histogram = histogram[: self.midpoint]
-        right_histogram = histogram[self.midpoint :]
+        right_histogram = histogram[self.midpoint:]
 
         # Find the peak of the left and right halves of the histogram
         # These will be the starting point for the left and right lines
@@ -182,7 +184,8 @@ class LineDetector:
         right_lane_inds = []
 
         # Create an output image to draw on and  visualize the result
-        out_img = np.dstack((binary_warped, binary_warped, binary_warped)) * 255
+        out_img = np.dstack(
+            (binary_warped, binary_warped, binary_warped)) * 255
         # Step through the windows one by one
         for window in range(nwindows):
             # Identify window boundaries in x and y (and right and left)
@@ -223,7 +226,8 @@ class LineDetector:
             # Append these indices to the lists
             left_lane_inds.append(good_left_inds)
             right_lane_inds.append(good_right_inds)
-            # If you found > minpix pixels, recenter next window on their mean position
+            # If you found > minpix pixels, recenter next window on their mean
+            # position
             if len(good_left_inds) > minpix:
                 leftx_current = np.int(np.mean(nonzerox[good_left_inds]))
             if len(good_right_inds) > minpix:
@@ -253,7 +257,8 @@ class LineDetector:
         ploty = np.linspace(
             0, binary_warped.shape[0] - 1, binary_warped.shape[0]
         )
-        left_fitx = left_fit[0] * ploty ** 2 + left_fit[1] * ploty + left_fit[2]
+        left_fitx = left_fit[0] * ploty ** 2 + \
+            left_fit[1] * ploty + left_fit[2]
         right_fitx = (
             right_fit[0] * ploty ** 2 + right_fit[1] * ploty + right_fit[2]
         )
@@ -381,7 +386,8 @@ class LineDetector:
             ]
         )
         # print(src,dst)
-        topdown_image, Minv = self.perspective_transform(binary_image, src, dst)
+        topdown_image, Minv = self.perspective_transform(
+            binary_image, src, dst)
         if self.debug:
             visualizer.plot_perspective_transform(
                 binary_image, topdown_image, src, dst

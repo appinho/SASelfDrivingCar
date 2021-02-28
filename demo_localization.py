@@ -31,7 +31,12 @@ def main():
     for i, line in enumerate(data[START:]):
         steering = line[5]
         sensor_data = [line[0], line[1:5]]
-        best_index = pf.run(steering, sensor_data, sensor_poses, VELOCITY, TURN_RATE)
+        best_index = pf.run(
+            steering,
+            sensor_data,
+            sensor_poses,
+            VELOCITY,
+            TURN_RATE)
         if not best_index:
             continue
         bp = pf.particles[best_index]

@@ -53,7 +53,9 @@ class UltrasonicDriver:
 
     def test(self):
         for i in range(100):
-            print("Measurement %d: %2.4f cm" % (i, self.measure_distance("cm")))
+            print(
+                "Measurement %d: %2.4f cm" %
+                (i, self.measure_distance("cm")))
             time.sleep(0.5)
 
 

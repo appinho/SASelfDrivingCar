@@ -2,13 +2,13 @@
 
 import socket
 
-#HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
+# HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
 HOST = '192.168.0.100'  # Standard loopback interface address (localhost)
 PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
 #PORT = 8000
 
 hostname = socket.gethostname()
-## getting the IP address using socket.gethostbyname() method
+# getting the IP address using socket.gethostbyname() method
 ip_address = socket.gethostbyname(hostname)
 print(ip_address)
 

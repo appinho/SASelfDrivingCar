@@ -13,7 +13,8 @@ if cap.isOpened() == False:
 frame_width = 640  # int(cap.get(3))
 frame_height = 480  # int(cap.get(4))
 
-# Define the codec and create VideoWriter object.The output is stored in 'outpy.avi' file.
+# Define the codec and create VideoWriter object.The output is stored in
+# 'outpy.avi' file.
 out = cv2.VideoWriter(
     "../data/video/01-14.avi",
     cv2.cv.FOURCC(*"mp4v"),
@@ -24,7 +25,7 @@ out = cv2.VideoWriter(
 while True:
     ret, frame = cap.read()
 
-    if ret == True:
+    if ret:
 
         # Write the frame into the file 'output.avi'
         out.write(frame)

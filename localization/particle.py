@@ -11,15 +11,15 @@ class Particle:
         if x:
             self.x = x
         else:
-            self.x = MAP_X * random.uniform(0,1)
+            self.x = MAP_X * random.uniform(0, 1)
         if y:
             self.y = y
         else:
-            self.y = MAP_Y * random.uniform(0,1)
+            self.y = MAP_Y * random.uniform(0, 1)
         if o:
             self.o = o
         else:
-            self.o = 2 * np.pi * random.uniform(0,1)
+            self.o = 2 * np.pi * random.uniform(0, 1)
         self.w = random.uniform(0, 1)
         self.landmarks = []
 
