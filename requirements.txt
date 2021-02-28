@@ -1,3 +1,6 @@
+pillow
 matplotlib
 keyboard
 opencv
+picamera
+socket
